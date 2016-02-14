@@ -1,0 +1,23 @@
+{
+  "name": "WaterPi",
+  "homepage": "https://github.com/amcolash/WaterPi",
+  "authors": [
+    "Andrew McOlash <amcolash@gmail.com>"
+  ],
+  "description": "A simple python-based program for a raspberry pi to check water level of a plant, which triggers a notification.",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.6",
+    "highstock": "highstock-release#~4.2.0"
+  }
+}
