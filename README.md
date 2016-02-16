@@ -24,6 +24,8 @@ make
 sudo make install
 ```
 
+I had smoe problems compiling ssocr, after the `make` command I then ran `cc   ssocr.o imgproc.o help.o  -L/usr/lib/arm-linux-gnueabihf -lImlib2 -o ssocr` followed by another `make` and finally `sudo make install`. Yikes, compiler linking problems (and I am pretty rusty with Makefiles).
+
 ## Projects Used
 - [OpenCV for Python](http://opencv.org/) - Open source computer vision library
 - [ssocr](https://www.unix-ag.uni-kl.de/~auerswal/ssocr/) - Seven segment display digit detection
