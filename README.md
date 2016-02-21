@@ -10,8 +10,8 @@ This project:
 - Push to PebbleHealth API (Future)
 
 # Setup
-- Install ffmpeg [here](https://www.reddit.com/r/raspberry_pi/comments/1yja3h/latest_ffmpeg_crosscompiled_for_pi/)
-- Install opencv 2 [here](https://github.com/Nolaan/libopencv_24/releases)
+- Install opencv (with python bindings and NumPy for python 2.x)
+  `sudo apt-get install python-opencv python-numpy`
 - Install ssocr
 ```
 sudo apt-get install libx11-dev
@@ -28,6 +28,7 @@ I had smoe problems compiling ssocr, after the `make` command I then ran `cc   s
 
 ## Projects Used
 - [OpenCV for Python](http://opencv.org/) - Open source computer vision library
+- [NumPy](http://www.numpy.org/) - Python computation and array library
 - [ssocr](https://www.unix-ag.uni-kl.de/~auerswal/ssocr/) - Seven segment display digit detection
 - [HighStock](http://www.highcharts.com/products/highstock) - Javascript library for graphing data
 - [Bootstrap](http://getbootstrap.com/) - CSS and Javascript library for layouts
