@@ -3,8 +3,12 @@ import numpy as np
 import os
 import logging
 
-STEPS=True
-CAMERA=False
+STEPS=False
+CAMERA=True
+
+# Ranges for valid weights, +/- 20 of my average weight
+WEIGHT_LOW = 160
+WEIGHT_HIGH = 200
 
 def get_image(cam):
   # read is the easiest way to get a full image out of a VideoCapture object.
@@ -136,6 +140,10 @@ def ocr_image(image_name):
   charlist = list(output)
   charlist.insert(len(charlist) - 1, '.')
   weight = ''.join(charlist)
+
+  test = float(weight)
+  if (test < WEIGHT_LOW) or (test > WEIGHT_HIGH):
+    return "error"
 
   return weight
 
