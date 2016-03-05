@@ -1,9 +1,10 @@
 import cv2
 import numpy as np
 import os
+import logging
 
-STEPS=False
-CAMERA=True
+STEPS=True
+CAMERA=False
 
 def get_image(cam):
   # read is the easiest way to get a full image out of a VideoCapture object.
@@ -11,25 +12,26 @@ def get_image(cam):
   return im
 
 def get_picture(use_camera):
+  logger = logging.getLogger('scale.ocr')
   if (use_camera):
     # Camera 0 is the integrated web cam on my netbook
     camera_port = 0
 
     # Number of frames to throw away while the camera adjusts to light levels
-    ramp_frames = 60
+    ramp_frames = 45
 
     # Init camera
     camera = cv2.VideoCapture(camera_port)
 
     # Ramp the camera
-    print("Taking image...")
+    logger.info("Taking image...")
     for i in xrange(ramp_frames):
       temp = get_image(camera)
 
     # Take the actual image we want to keep
     cv2.imwrite('img/webcam.png', get_image(camera))
 
-    print("Image Taken")
+    logger.info("Image Taken")
 
     # Release the camera
     del(camera)
@@ -134,15 +136,11 @@ def ocr_image(image_name):
   charlist = list(output)
   charlist.insert(len(charlist) - 1, '.')
   weight = ''.join(charlist)
-  print weight
 
   return weight
 
-def get_weight(useCam):
-  return ocr_image(get_picture(useCam))
-
 def main():
-  ocr_weight(CAMERA)
+  print ocr_image(get_picture(CAMERA))
   return
 
 # Only run main if not imported
