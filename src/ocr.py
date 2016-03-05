@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 STEPS=False
-CAMERA=False
+CAMERA=True
 
 def get_image(cam):
   # read is the easiest way to get a full image out of a VideoCapture object.
@@ -22,11 +22,14 @@ def get_picture(use_camera):
     camera = cv2.VideoCapture(camera_port)
 
     # Ramp the camera
-    for i in xrange(ramp_frames):
-     temp = get_image(camera)
     print("Taking image...")
+    for i in xrange(ramp_frames):
+      temp = get_image(camera)
+
     # Take the actual image we want to keep
-    cv2.imwrite('img/webcam.png', get_image())
+    cv2.imwrite('img/webcam.png', get_image(camera))
+
+    print("Image Taken")
 
     # Release the camera
     del(camera)
@@ -134,8 +137,11 @@ def ocr_image(image_name):
 
   return charlist
 
+def get_weight(useCam):
+  return ocr_image(get_picture(useCam))
+
 def main():
-  ocr_image(get_picture(CAMERA))
+  ocr_weight(CAMERA)
   return
 
 # Only run main if not imported

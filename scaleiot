@@ -1,0 +1,46 @@
+#!/bin/bash
+# /etc/init.d/pebblepi
+
+### BEGIN INIT INFO
+# Provides:          ScaleIoT
+# Required-Start:
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start ScaleIoT at boot
+# Description:       Start ScaleIoT at boot
+### END INIT INFO
+
+# If you want a command to always run, put it here
+PATH=$PATH:/usr/local/bin
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Starting ScaleIoT"
+    # run application you want to start
+    kill -9 $(ps aux | grep 'ScaleIoT/src/scale.py' | awk '{print $2}')
+    pushd /home/pi/ScaleIoT/src/
+    python /home/pi/ScaleIoT/src/scale.py
+    popd
+    ;;
+  restart)
+    echo "Restarting ScaleIoT"
+    # run application you want to start
+    kill -9 $(ps aux | grep 'ScaleIoT/src/scale.py' | awk '{print $2}')
+    pushd /home/pi/ScaleIoT/src/
+    python /home/pi/ScaleIoT/src/scale.py
+    popd
+    ;;
+  stop)
+    echo "Stopping ScaleIoT"
+    # kill application you want to stop
+    kill -9 $(ps aux | grep 'ScaleIoT/src/scale.py' | awk '{print $2}')
+    ;;
+  *)
+    echo "Usage: /etc/init.d/scaleiot {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0
