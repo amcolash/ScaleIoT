@@ -133,9 +133,10 @@ def ocr_image(image_name):
   output = output.replace('\n', '')
   charlist = list(output)
   charlist.insert(len(charlist) - 1, '.')
-  print ''.join(charlist)
+  weight = ''.join(charlist)
+  print weight
 
-  return charlist
+  return weight
 
 def get_weight(useCam):
   return ocr_image(get_picture(useCam))

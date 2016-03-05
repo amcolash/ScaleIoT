@@ -13,20 +13,24 @@ GREEN_LED=12
 TRIGGER=16
 
 def signal_handler(signal, frame):
+  logging.getLogger('scale').info("SIGINT, closing safely")
   GPIO.cleanup()
   sys.exit(0)
 
 def event_trigger(channel):
+  logger = logging.getLogger('scale')
   logger.info("edge detect")
-  time.sleep(6)
+  time.sleep(3)
   GPIO.output(GREEN_LED, True)
 
-  imag = ocr.get_picture(True)
-  logger.info("image file: " + image)
+  image = ocr.get_picture(True)
+  weight = ocr.ocr_image(image)
+  logger.info("weight: " + weight)
 
   GPIO.output(GREEN_LED, False)
 
 def exception_handler(type, value, tb):
+  logger = logging.getLogger('scale')
   logger.exception("Uncaught exception: {0}".format(str(value)))
 
 def setup_logger():
@@ -69,13 +73,16 @@ def setup_gpio():
   # Set up trigger event handler
   GPIO.add_event_detect(TRIGGER, GPIO.FALLING, callback=event_trigger, bouncetime=300)
 
-  # Set up SIGINT event handler (cleanly exit after ctrl-c)
+  # Set up SIGINT and SIGTERM event handlers (cleanly exit after ctrl-c and kill)
   signal.signal(signal.SIGINT, signal_handler)
+  signal.signal(signal.SIGTERM, signal_handler)
 
 
 def main():
-  setup_logging()
+  setup_logger()
   setup_gpio()
+
+  logger = logging.getLogger('scale')
 
   # Print where this thing is running from
   logger.info("starting scaleiot, current directory: " + os.getcwd())
