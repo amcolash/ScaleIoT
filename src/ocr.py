@@ -3,12 +3,12 @@ import numpy as np
 import os
 import logging
 
-STEPS=False
-CAMERA=True
+STEPS=True
+CAMERA=False
 
-# Ranges for valid weights, +/- 20 of my average weight
-WEIGHT_LOW = 160
-WEIGHT_HIGH = 200
+# Only show steps if the program is running by itself (not imported)
+if __name__ != '__main__':
+  STEPS=False
 
 def get_image(cam):
   # read is the easiest way to get a full image out of a VideoCapture object.
@@ -45,6 +45,9 @@ def get_picture(use_camera):
     return 'img/test.png'
 
 def ocr_image(image_name):
+  logger = logging.getLogger('scale.ocr')
+  logger.info("Start Image Processing")
+
   image = cv2.imread(image_name)
 
   if (STEPS):
@@ -131,6 +134,9 @@ def ocr_image(image_name):
   # Write final image to be used in ssocr
   cv2.imwrite('img/lcd_cropped.png', final)
 
+  logger.info("End Image Processing")
+  logger.info("Start OCR")
+
   # Use ssocr to figure out the value
   output = os.popen('ssocr erosion -d -1 img/lcd_cropped.png').read()
 
@@ -141,9 +147,7 @@ def ocr_image(image_name):
   charlist.insert(len(charlist) - 1, '.')
   weight = ''.join(charlist)
 
-  test = float(weight)
-  if (test < WEIGHT_LOW) or (test > WEIGHT_HIGH):
-    return "error"
+  logger.info("End OCR")
 
   return weight
 

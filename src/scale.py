@@ -5,33 +5,73 @@ import signal
 import sys
 import os
 import logging
+import json
+
+# Define MIN/MAX ranges for weight, if outside range error (I used +/- 10%)
+MIN_WEIGHT=160
+MAX_WEIGHT=200
 
 # LED GPIO Pin
 GREEN_LED=12
+# LED GPIO Pin
+RED_LED=6
 
 # Trigger GPIO pin when scale LED activated
 TRIGGER=16
 
 def signal_handler(signal, frame):
-  logging.getLogger('scale').info("SIGINT, closing safely")
+  logging.getLogger('scale').info("SIGINT or SIGTERM, closing safely")
   GPIO.cleanup()
   sys.exit(0)
 
 def event_trigger(channel):
   logger = logging.getLogger('scale')
-  logger.info("edge detect")
+  logger.info("Edge Detect")
   time.sleep(3)
   GPIO.output(GREEN_LED, True)
 
+  # Take picture with webcam
   image = ocr.get_picture(True)
-  weight = ocr.ocr_image(image)
-  logger.info("weight: " + weight)
-
+  # Turn off LED when done
   GPIO.output(GREEN_LED, False)
+
+  # OCR the image
+  weight = ocr.ocr_image(image)
+
+  # Live on the wild side, exceptions are handled globally for us (probably bad)
+  weight = float(weight)
+
+  if (weight < MIN_WEIGHT) or (weight > MAX_WEIGHT):
+    raise ValueError('Invalid Weight!')
+  else:
+    logger.info("Weight: " + weight)
+
+    # Open the json file
+    with open('../web/data.json') as f:
+      data = json.load(f)
+
+    # Get time/date
+    # timestamp = time.strftime('%x %X %Z')
+    timestamp = int(round(time.time() * 1000))
+
+    # Append to the temp json object
+    data.update({timestamp : weight})
+
+    # Write changes to the file
+    with open(PATH + '../web/data.json', 'w') as f:
+      json.dump(data, f, sort_keys=True, indent=2)
+
 
 def exception_handler(type, value, tb):
   logger = logging.getLogger('scale')
   logger.exception("Uncaught exception: {0}".format(str(value)))
+
+  # Blink Red LED on exceptions
+  for i in range(0,6):
+    GPIO.output(RED_LED, True)
+    time.sleep(0.35)
+    GPIO.output(RED_LED, False)
+    time.sleep(0.35)
 
 def setup_logger():
   # Used from https://docs.python.org/2/howto/logging-cookbook.html
@@ -40,7 +80,7 @@ def setup_logger():
   logger.setLevel(logging.DEBUG)
 
   # create file handler which logs even debug messages
-  fh = logging.FileHandler('log.txt')
+  fh = logging.FileHandler('log.txt', mode=w)
   fh.setLevel(logging.DEBUG)
 
   # create console handler with a higher log level
@@ -62,13 +102,16 @@ def setup_logger():
 def setup_gpio():
   # Set up pins
   GPIO.setwarnings(False) # Remove the annoying warnings, nothing else is using the pins
-
   GPIO.setmode(GPIO.BCM) # Broadcom pin-numbering scheme
+
   GPIO.setup(GREEN_LED, GPIO.OUT) # Green LED pin set as output
+  GPIO.setup(RED_LED, GPIO.OUT) # Red LED pin set as output
+
   GPIO.setup(TRIGGER, GPIO.IN) # Set up input trigger pin
 
   # Reset LED
   GPIO.output(GREEN_LED, False)
+  GPIO.output(RED_LED, False)
 
   # Set up trigger event handler
   GPIO.add_event_detect(TRIGGER, GPIO.FALLING, callback=event_trigger, bouncetime=300)
