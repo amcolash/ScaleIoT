@@ -9,7 +9,7 @@ import json
 
 # Define MIN/MAX ranges for weight, if outside range error (I used +/- 10%)
 MIN_WEIGHT=160
-MAX_WEIGHT=200
+MAX_WEIGHT=220
 
 # LED GPIO Pin
 GREEN_LED=12
@@ -44,7 +44,7 @@ def event_trigger(channel):
   if (weight < MIN_WEIGHT) or (weight > MAX_WEIGHT):
     raise ValueError('Invalid Weight!')
   else:
-    logger.info("Weight: " + weight)
+    logger.info("Weight: " + str(weight))
 
     # Open the json file
     with open('../web/data.json') as f:
@@ -58,8 +58,15 @@ def event_trigger(channel):
     data.update({timestamp : weight})
 
     # Write changes to the file
-    with open(PATH + '../web/data.json', 'w') as f:
+    with open('../web/data.json', 'w') as f:
       json.dump(data, f, sort_keys=True, indent=2)
+
+    # Flash Green LED for successful weight capture
+    for i in range(0,6):
+      GPIO.output(GREEN_LED, True)
+      time.sleep(0.35)
+      GPIO.output(GREEN_LED, False)
+      time.sleep(0.35)
 
 
 def exception_handler(type, value, tb):

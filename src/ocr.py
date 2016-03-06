@@ -81,15 +81,12 @@ def ocr_image(image_name):
   cnt = sorted(contours1[0], key = cv2.contourArea, reverse = True)[0]
 
   area = cv2.minAreaRect(cnt)
-  print area[2]
 
   straighten_angle = 0
   if (area[2] > -45):
     straighten_angle = area[2]
   else:
     straighten_angle = area[2] + 90
-
-  print straighten_angle
 
   # Straighten the image
   (h, w) = image.shape[:2]
@@ -169,7 +166,7 @@ def ocr_image(image_name):
   charlist.insert(len(charlist) - 1, '.')
   weight = ''.join(charlist)
 
-  logger.info("End OCR")
+  logger.info("End OCR, final weight: " + weight)
 
   return weight
 
