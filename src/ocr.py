@@ -42,7 +42,7 @@ def get_picture(use_camera):
 
     return 'img/webcam.png'
   else:
-    return 'img/test.png'
+    return 'img/test1.png'
 
 def ocr_image(image_name):
   logger = logging.getLogger('scale.ocr')
@@ -108,7 +108,7 @@ def ocr_image(image_name):
   # Crop edges because of artifacts
   def is_contour_bad(c):
     area = cv2.contourArea(c)
-    return area < 1000
+    return area < 800
 
   mask3 = np.ones(mask2.shape[:2], dtype="uint8") * 255
   contours2 = cv2.findContours(mask2,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)

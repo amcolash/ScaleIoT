@@ -80,7 +80,7 @@ def setup_logger():
   logger.setLevel(logging.DEBUG)
 
   # create file handler which logs even debug messages
-  fh = logging.FileHandler('log.txt', mode=w)
+  fh = logging.FileHandler('log.txt', mode='w')
   fh.setLevel(logging.DEBUG)
 
   # create console handler with a higher log level
