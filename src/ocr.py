@@ -80,6 +80,28 @@ def ocr_image(image_name):
   contours1 = cv2.findContours(mask1,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
   cnt = sorted(contours1[0], key = cv2.contourArea, reverse = True)[0]
 
+  area = cv2.minAreaRect(cnt)
+  print area[2]
+
+  straighten_angle = 0
+  if (area[2] > -45):
+    straighten_angle = area[2]
+  else:
+    straighten_angle = area[2] + 90
+
+  print straighten_angle
+
+  # Straighten the image
+  (h, w) = image.shape[:2]
+  center = (w / 2, h / 2)
+  M = cv2.getRotationMatrix2D(center, straighten_angle, 1.0)
+  image = cv2.warpAffine(image, M, (w, h))
+
+  if (STEPS):
+    cv2.imshow('image',image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
   # Crop to just the screen portion
   x,y,w,h = cv2.boundingRect(cnt)
   crop_img = image[y:y+h,x+25:x+w]
@@ -108,7 +130,7 @@ def ocr_image(image_name):
   # Crop edges because of artifacts
   def is_contour_bad(c):
     area = cv2.contourArea(c)
-    return area < 800
+    return area < 600
 
   mask3 = np.ones(mask2.shape[:2], dtype="uint8") * 255
   contours2 = cv2.findContours(mask2,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
