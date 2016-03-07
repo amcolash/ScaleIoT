@@ -21,7 +21,7 @@ case "$1" in
     # run application you want to start
     kill -9 $(ps aux | grep 'ScaleIoT/src/scale.py' | awk '{print $2}')
     pushd /home/pi/ScaleIoT/src/
-    python /home/pi/ScaleIoT/src/scale.py
+    python /home/pi/ScaleIoT/src/scale.py &
     popd
     ;;
   restart)
@@ -29,7 +29,7 @@ case "$1" in
     # run application you want to start
     kill -9 $(ps aux | grep 'ScaleIoT/src/scale.py' | awk '{print $2}')
     pushd /home/pi/ScaleIoT/src/
-    python /home/pi/ScaleIoT/src/scale.py
+    python /home/pi/ScaleIoT/src/scale.py &
     popd
     ;;
   stop)

@@ -27,7 +27,7 @@ sudo make install
 I had some problems compiling ssocr, after the `make` command I then ran `cc   ssocr.o imgproc.o help.o  -L/usr/lib/arm-linux-gnueabihf -lImlib2 -o ssocr` followed by another `make` and finally `sudo make install`. Yikes, compiler linking problems (and I am pretty rusty with Makefiles).
 
 ## Installing as a service
-To install this ScaleIoT as a service, edit the `scaleiot` script in the root of this repository with `vim scaleiot` or `nano scaleiot`. Inside the file, change the directory of listed to match that of your own checkout of this repository. Atfer that, just copy it with `sudo cp scaleiot /etc/init.d/` and run `sudo update-rc.d scaleiot defaults`.
+To install this ScaleIoT as a service, edit the `scaleiot` script in the root of this repository with `vim scaleiot` or `nano scaleiot`. Then just run `./install.sh` from the root directory of the project. (If you do not have upstart, you may need to add to rc.local or something similar)
 
 ## Setting up the web server
 In this project I am using the apache web server because it is pretty simple to set up. I started by installing apache with `sudo apt-get install apache2`.
