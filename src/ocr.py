@@ -5,6 +5,8 @@ import os
 import logging
 
 STEPS=True
+SKIP_STEPS=False
+
 CAMERA=False
 
 TEST_IMAGE='img/test2.png'
@@ -53,7 +55,7 @@ def ocr_image(image_name):
 
   image = cv2.imread(image_name)
 
-  if (STEPS):
+  if (STEPS and not SKIP_STEPS):
     cv2.imshow('image',image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
@@ -64,7 +66,7 @@ def ocr_image(image_name):
   M = cv2.getRotationMatrix2D(center, 180, 1.0)
   image = cv2.warpAffine(image, M, (w, h))
 
-  if (STEPS):
+  if (STEPS and not SKIP_STEPS):
     cv2.imshow('image',image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
@@ -74,8 +76,8 @@ def ocr_image(image_name):
   lower = np.array([20, 10, 10])
   mask1 = cv2.inRange(image, lower, upper)
 
-  if (STEPS):
-    cv2.imshow('image',mask1)
+  if (STEPS and not SKIP_STEPS):
+    cv2.imshow('mask1',mask1)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -97,7 +99,7 @@ def ocr_image(image_name):
   M = cv2.getRotationMatrix2D(center, straighten_angle, 1.0)
   image = cv2.warpAffine(image, M, (w, h))
 
-  if (STEPS):
+  if (STEPS and not SKIP_STEPS):
     cv2.imshow('image',image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
@@ -106,40 +108,44 @@ def ocr_image(image_name):
   x,y,w,h = cv2.boundingRect(cnt)
   crop_img = image[y:y+h-10,x+25:x+w]
 
-  if (STEPS):
-    cv2.imshow('image',crop_img)
+  if (STEPS and not SKIP_STEPS):
+    cv2.imshow('crop_img',crop_img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+  # Add two copies of the image on top (make things a bit birghter)
+  crop_img = crop_img + crop_img
+
+  if (STEPS and not SKIP_STEPS):
+    cv2.imshow('crop_img',crop_img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
   # Convert to grayscale
   crop_img = cv2.cvtColor(crop_img,cv2.COLOR_BGR2GRAY)
 
-  if (STEPS):
-    cv2.imshow('image',crop_img)
+  if (STEPS and not SKIP_STEPS):
+    cv2.imshow('crop_img',crop_img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
   # Do histogram equalization of image
   clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(16,16))
-  crop_img = clahe.apply(crop_img)
+  # crop_img = clahe.apply(crop_img)
 
-  if (STEPS):
-    cv2.imshow('image',crop_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+  # Get new mask
+  mask2 = cv2.inRange(crop_img, 0, 40)
+  final = mask2.copy()
 
-  # Get new mask and blur it
-  mask2 = cv2.inRange(crop_img, 0, 25)
-
-  if (STEPS):
-    cv2.imshow('image',mask2)
+  if (STEPS and not SKIP_STEPS):
+    cv2.imshow('mask2',mask2)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
   # Crop edges because of artifacts
   def is_contour_bad(c):
     area = cv2.contourArea(c)
-    return area < 900
+    return area < 700
 
   mask3 = np.ones(mask2.shape[:2], dtype="uint8") * 255
   contours2 = cv2.findContours(mask2,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -150,20 +156,20 @@ def ocr_image(image_name):
       cv2.drawContours(mask3, [c], -1, 0, -1)
 
   if (STEPS):
-    cv2.imshow('image', mask3)
+    cv2.imshow('mask3', mask3)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+  mask3_inv = cv2.bitwise_not(mask3)
+
   # remove the contours from the image and show the resulting images
-  final = cv2.bitwise_and(crop_img, crop_img, mask=mask3)
-  # had to redo the range here, masking a mask didn't seem to work well
-  final = cv2.inRange(final, 0, 25)
+  final = cv2.bitwise_or(final, mask3_inv)
 
   # blur just a little bit
   final = cv2.blur(final, (2,2))
 
   if (STEPS):
-    cv2.imshow('image',final)
+    cv2.imshow('final',final)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
