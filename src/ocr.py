@@ -1,10 +1,13 @@
 import cv2
 import numpy as np
+import sys
 import os
 import logging
 
 STEPS=True
 CAMERA=False
+
+TEST_IMAGE='img/test2.png'
 
 # Only show steps if the program is running by itself (not imported)
 if __name__ != '__main__':
@@ -42,7 +45,7 @@ def get_picture(use_camera):
 
     return 'img/webcam.png'
   else:
-    return 'img/test1.png'
+    return TEST_IMAGE
 
 def ocr_image(image_name):
   logger = logging.getLogger('scale.ocr')
@@ -101,7 +104,7 @@ def ocr_image(image_name):
 
   # Crop to just the screen portion
   x,y,w,h = cv2.boundingRect(cnt)
-  crop_img = image[y:y+h,x+25:x+w]
+  crop_img = image[y:y+h-10,x+25:x+w]
 
   if (STEPS):
     cv2.imshow('image',crop_img)
@@ -110,6 +113,15 @@ def ocr_image(image_name):
 
   # Convert to grayscale
   crop_img = cv2.cvtColor(crop_img,cv2.COLOR_BGR2GRAY)
+
+  if (STEPS):
+    cv2.imshow('image',crop_img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+  # Do histogram equalization of image
+  clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(16,16))
+  crop_img = clahe.apply(crop_img)
 
   if (STEPS):
     cv2.imshow('image',crop_img)
@@ -127,7 +139,7 @@ def ocr_image(image_name):
   # Crop edges because of artifacts
   def is_contour_bad(c):
     area = cv2.contourArea(c)
-    return area < 600
+    return area < 900
 
   mask3 = np.ones(mask2.shape[:2], dtype="uint8") * 255
   contours2 = cv2.findContours(mask2,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -136,6 +148,11 @@ def ocr_image(image_name):
     # if the contour is bad, draw it on the mask
     if is_contour_bad(c):
       cv2.drawContours(mask3, [c], -1, 0, -1)
+
+  if (STEPS):
+    cv2.imshow('image', mask3)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
   # remove the contours from the image and show the resulting images
   final = cv2.bitwise_and(crop_img, crop_img, mask=mask3)
@@ -170,10 +187,17 @@ def ocr_image(image_name):
 
   return weight
 
-def main():
+def main(argv):
+  global TEST_IMAGE
+
+  # If given a file name, use as test image
+  print len(argv)
+  if (len(argv) > 0):
+    TEST_IMAGE = argv[0]
+
   print ocr_image(get_picture(CAMERA))
   return
 
 # Only run main if not imported
 if __name__ == '__main__':
-  main()
+  main(sys.argv[1:])
