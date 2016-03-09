@@ -106,7 +106,7 @@ def ocr_image(image_name):
 
   # Crop to just the screen portion
   x,y,w,h = cv2.boundingRect(cnt)
-  crop_img = image[y:y+h-10,x+25:x+w]
+  crop_img = image[y:y+h-18,x+25:x+w]
 
   if (STEPS and not SKIP_STEPS):
     cv2.imshow('crop_img',crop_img)
@@ -145,7 +145,7 @@ def ocr_image(image_name):
   # Crop edges because of artifacts
   def is_contour_bad(c):
     area = cv2.contourArea(c)
-    return area < 700
+    return area < 800
 
   mask3 = np.ones(mask2.shape[:2], dtype="uint8") * 255
   contours2 = cv2.findContours(mask2,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
