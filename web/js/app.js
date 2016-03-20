@@ -37,7 +37,7 @@ $(document).ready(function() {
         	type: 'all',
         	text: 'All'
         }],
-        selected: 1 // choose 1 week previous
+        selected: 2 // choose 1 month previous
       },
       series: [{}],
       title: {
