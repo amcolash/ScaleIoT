@@ -2,6 +2,7 @@ $(document).ready(function() {
   var options = {
       chart: {
         renderTo: 'chart',
+        type: 'spline'
       },
       legend: {
         enabled: false
@@ -72,17 +73,23 @@ $(document).ready(function() {
     var series = [];
 
     // Store some stats while parsing through
-    var lastWeight;
+    var lastTime = 0;
+    var lastWeight = 0;
     $.each(data, function(key, value) {
       value = parseFloat(value.toFixed(1));
       series.push([parseInt(key), value]);
-      lastWeight = value;
+
+      // Set last weight based on last time (handles incorrectly sorted lists)
+      if (parseInt(key) > lastTime) {
+        lastTime = parseInt(key);
+        lastWeight = value;
+      }
     });
 
-    if (lastWeight !== undefined) {
+    if (lastWeight > 0) {
       $('#lastWeight').text(lastWeight + ' lbs');
     } else {
-      $('#lastWeight').text('None');
+      $('#lastWeight').text('Unknown');
     }
 
     // sort the dates because it doesn't seem like Python is doing it for us :/
