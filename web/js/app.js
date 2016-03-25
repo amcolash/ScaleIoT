@@ -14,13 +14,13 @@ $(document).ready(function() {
       },
       rangeSelector: {
         buttons: [{
-          type: 'day',
-          count: 3,
-          text: '3d'
-        }, {
         	type: 'week',
         	count: 1,
         	text: '1w'
+        }, {
+          type: 'week',
+        	count: 2,
+        	text: '2w'
         }, {
         	type: 'month',
         	count: 1,
@@ -37,7 +37,7 @@ $(document).ready(function() {
         	type: 'all',
         	text: 'All'
         }],
-        selected: 2 // choose 1 month previous
+        selected: 2 // choose the 2 weeks previous by default
       },
       series: [{}],
       title: {
@@ -89,7 +89,7 @@ $(document).ready(function() {
     if (lastWeight > 0) {
       $('#lastWeight').text(lastWeight + ' lbs');
     } else {
-      $('#lastWeight').text('Unknown');
+      $('#lastWeight').text('?');
     }
 
     // sort the dates because it doesn't seem like Python is doing it for us :/
