@@ -70,5 +70,6 @@ Restart apache finally: `sudo service apache2 restart`.
 - [NumPy](http://www.numpy.org/) - Python computation and array library
 - [ssocr](https://www.unix-ag.uni-kl.de/~auerswal/ssocr/) - Seven segment display digit detection
 - [HighStock](http://www.highcharts.com/products/highstock) - Javascript library for graphing data
+- [highcharts-regression](https://github.com/streamlinesocial/highcharts-regression) - Regression lines for Highcharts / HighStock
 - [Bootstrap](http://getbootstrap.com/) - CSS and Javascript library for layouts
 - [Bower](http://bower.io/) - Front-End web dependency management

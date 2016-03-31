@@ -37,7 +37,7 @@ $(document).ready(function() {
         	type: 'all',
         	text: 'All'
         }],
-        selected: 2 // choose the 2 weeks previous by default
+        selected: 5 // choose the 2 weeks previous by default
       },
       series: [{}],
       title: {
@@ -45,6 +45,7 @@ $(document).ready(function() {
       },
       tooltip: {
         xDateFormat: '%A, %B %d, %l:%M%p',
+        valueDecimals: 1,
         valueSuffix: ' lbs',
       },
       xAxis: {
@@ -76,7 +77,7 @@ $(document).ready(function() {
     var lastTime = 0;
     var lastWeight = 0;
     $.each(data, function(key, value) {
-      value = parseFloat(value.toFixed(1));
+      value = parseFloat(value);
       series.push([parseInt(key), value]);
 
       // Set last weight based on last time (handles incorrectly sorted lists)
@@ -87,7 +88,7 @@ $(document).ready(function() {
     });
 
     if (lastWeight > 0) {
-      $('#lastWeight').text(lastWeight + ' lbs');
+      $('#lastWeight').text(lastWeight.toFixed(1) + ' lbs');
     } else {
       $('#lastWeight').text('?');
     }
@@ -103,8 +104,22 @@ $(document).ready(function() {
     });
 
     options.series[0].data = series;
-    options.series[0].color = '#00a6ff';
+    options.series[0].color = '#bceff2';
     options.series[0].name = 'Weight';
+
+    // Add trendline
+    options.series[0].regression = true;
+    options.series[0].regressionSettings = {
+        type: 'polynomial',
+        color:  '#00A6FF',
+        name: 'Average Weight',
+        lineWidth: 4,
+        tooltip: {
+          valueDecimals: 1,
+          valueSuffix: ' lbs'
+        }
+    };
+
     var chart = new Highcharts.StockChart(options);
   });
 
