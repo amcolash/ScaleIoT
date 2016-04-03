@@ -2,12 +2,6 @@
   body .container {
     padding: 10px;
   }
-
-  #info img {
-    display: block;
-    margin: auto;
-    max-width: 180px;
-  }
 }
 
 @media (min-width: 768px) {
@@ -21,11 +15,15 @@
     flex-direction: column;
     justify-content: center;
   }
+}
 
-  #info img {
-    float: left;
-    max-width: 160px;
-    margin-left: 13px;
+@media (max-width: 401px) {
+  #rightSide {
+    padding-top: 6px;
+  }
+
+  #stats {
+    margin-top: 22px;
   }
 }
 
@@ -39,14 +37,16 @@ html body {
   border-radius: 6px;
 }
 
-#stats .padding {
-  padding-left: 10px;
-  padding-right: 10px;
+#info img {
+  margin: -3px 12px 10px -3px;
+  float: left;
 }
 
-#stats h1 {
+h1 {
+  display: inline;
   word-wrap: break-word;
   margin-top: 12px;
+  vertical-align: top;
 }
 
 #chartContainer {
@@ -58,8 +58,9 @@ html body {
   height: 350px;
 }
 
-#status {
+#stats {
+  padding: 0;
   list-style-type: none;
-  padding: 0px;
   font-size: 18px;
+  margin-bottom: 0;
 }

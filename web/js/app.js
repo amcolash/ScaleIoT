@@ -76,6 +76,9 @@ $(document).ready(function() {
     // Store some stats while parsing through
     var lastTime = 0;
     var lastWeight = 0;
+    var averageWeight = 0;
+    var totalWeights = 0;
+
     $.each(data, function(key, value) {
       value = parseFloat(value);
       series.push([parseInt(key), value]);
@@ -85,12 +88,22 @@ $(document).ready(function() {
         lastTime = parseInt(key);
         lastWeight = value;
       }
+
+      averageWeight += value;
+      totalWeights ++;
     });
 
     if (lastWeight > 0) {
       $('#lastWeight').text(lastWeight.toFixed(1) + ' lbs');
     } else {
       $('#lastWeight').text('?');
+    }
+
+    if (averageWeight > 0 && totalWeights > 0) {
+      averageWeight = averageWeight / totalWeights;
+      $('#averageWeight').text(averageWeight.toFixed(1) + ' lbs');
+    } else {
+      $('averageWeight').text('?');
     }
 
     // sort the dates because it doesn't seem like Python is doing it for us :/
@@ -104,7 +117,7 @@ $(document).ready(function() {
     });
 
     options.series[0].data = series;
-    options.series[0].color = '#bceff2';
+    options.series[0].color = '#99ecf1';
     options.series[0].name = 'Weight';
 
     // Add trendline
