@@ -40,7 +40,6 @@ First, install with `sudo apt-get install nginx`. Then, to change the deafult lo
 
 Finally, you will need to install dependencies for the web page. I used bower in this case. You might need to install that and nodejs, check out AdaFruit's wonderful [tutorial](https://learn.adafruit.com/node-embedded-development/installing-node-dot-js) and simple setup for node (on pi 1 + 2, pi 3 just do `sudo apt-get install node`).
 ```
-cd web/
 npm install -g bower
 bower install
 ```
