@@ -19,7 +19,7 @@ To start, you will need a copy of this project. Open up your terminal and then y
   `sudo apt-get install python-opencv python-numpy`
 - Install ssocr (ocr of seven segment displays)
 ```
-sudo apt-get install libx11-dev install libimlib2-dev
+sudo apt-get install libx11-dev libimlib2-dev
 wget http://www.unix-ag.uni-kl.de/~auerswal/ssocr/ssocr-2.14.1.tar.bz2
 bzip2 -d ssocr-2.14.1.tar.bz2
 tar xvf ssocr-2.14.1.tar
