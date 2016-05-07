@@ -30,30 +30,9 @@ I had some problems compiling ssocr, after the `make` command I then ran `cc   s
 To install this ScaleIoT as a service, edit the `scaleiot` script in the root of this repository with `vim scaleiot` or `nano scaleiot`. Then just run `./install.sh` from the root directory of the project. (If you do not have upstart, you may need to add to rc.local or something similar)
 
 ## Setting up the web server
-In this project I am using the apache web server because it is pretty simple to set up. I started by installing apache with `sudo apt-get install apache2`.
+In this project I am using nginx because it is lightweight and less overhead for the pi. The setup is also really simple!
 
-Then, I modified the config files to work for my setup (you might need to change things depending on where you cloned your repo to.
-
-Edit apache config: `sudo vim /etc/apache2/apache2.conf`
-After the following:
-```
-<Directory /var/www/>
-  ...
-</Directory
-```
-Add this:
-```
-<Directory /your/path/ScaleIoT/web/>
-  Options Indexes FollowSymlinks
-  AllowOverride None
-  Require all granted
-</Directory>
-```
-
-Edit the default virtual hosts:
-`vim /etc/apache2/sites-available/000-default.conf`
-
-Change `DocumentRoot /var/www/` to `Document Root /your/path/ScaleIot/web`
+First, install with `sudo apt-get install nginx`. Then, to change the deafult location for the server, do `sudo vim /etc/nginx/sites-available` (substitute for your favorite editor). On the line with ``, just edit the path from `/usr/share/nginx/www` to the root directory of the project.
 
 Finally, you will need to install dependencies for the web page. I used bower in this case. You might need to install that and nodejs.
 ```
@@ -63,7 +42,7 @@ npm install -g bower
 bower install
 ```
 
-Restart apache finally: `sudo service apache2 restart`.
+Finally, start up nginx (will run by default on startup normally): `sudo /etc/init.d/nginx start`.
 
 ## Projects Used
 - [OpenCV for Python](http://opencv.org/) - Open source computer vision library
