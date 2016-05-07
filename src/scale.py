@@ -12,12 +12,12 @@ MIN_WEIGHT=160
 MAX_WEIGHT=220
 
 # LED GPIO Pin
-GREEN_LED=12
+GREEN_LED=13
 # LED GPIO Pin
-RED_LED=6
+RED_LED=19
 
 # Trigger GPIO pin when scale LED activated
-TRIGGER=16
+TRIGGER=26
 
 def signal_handler(signal, frame):
   logging.getLogger('scale').info("SIGINT or SIGTERM, closing safely")

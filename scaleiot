@@ -1,5 +1,5 @@
 #!/bin/bash
-# /etc/init.d/pebblepi
+# /etc/init.d/scaleiot
 
 ### BEGIN INIT INFO
 # Provides:          ScaleIoT
@@ -14,22 +14,25 @@
 # If you want a command to always run, put it here
 PATH=$PATH:/usr/local/bin
 
+# Change this if necessary
+MYPATH=/home/pi/ScaleIoT
+
 # Carry out specific functions when asked to by the system
 case "$1" in
   start)
     echo "Starting ScaleIoT"
     # run application you want to start
     kill -9 $(ps aux | grep 'ScaleIoT/src/scale.py' | awk '{print $2}')
-    pushd /home/pi/ScaleIoT/src/
-    python /home/pi/ScaleIoT/src/scale.py &
+    pushd $MYPATH/src/
+    python $MYPATH/src/scale.py &
     popd
     ;;
   restart)
     echo "Restarting ScaleIoT"
     # run application you want to start
     kill -9 $(ps aux | grep 'ScaleIoT/src/scale.py' | awk '{print $2}')
-    pushd /home/pi/ScaleIoT/src/
-    python /home/pi/ScaleIoT/src/scale.py &
+    pushd $MYPATH/src/
+    python $MYPATH/src/scale.py &
     popd
     ;;
   stop)
