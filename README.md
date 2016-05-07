@@ -10,6 +10,11 @@ This project:
 - Push to PebbleHealth API (Future)
 
 # Setup
+
+## Cloning the project
+To start, you will need a copy of this project. Open up your terminal and then you will be set to start! Simply type `git clone https://github.com/amcolash/ScaleIoT.git` or `git clone git@github.com:amcolash/ScaleIoT.git`, depending on your preferences for cloning repos. If you don't know, choose the first option.
+
+## Installing dependencies
 - Install opencv (with python bindings and NumPy for python 2.x)
   `sudo apt-get install python-opencv python-numpy`
 - Install ssocr (ocr of seven segment displays)
