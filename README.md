@@ -28,7 +28,7 @@ make
 sudo make install
 ```
 
-I had some problems compiling ssocr, after the `make` command I then ran `cc   ssocr.o imgproc.o help.o  -L/usr/lib/arm-linux-gnueabihf -lImlib2 -o ssocr` followed by another `make` and finally `sudo make install`. Yikes, compiler linking problems (and I am pretty rusty with Makefiles).
+I had some problems compiling ssocr, after the `make` command I then ran `cc   ssocr.o imgproc.o help.o  -L/usr/lib/arm-linux-gnueabihf -lImlib2 -lm -o ssocr` followed by another `make` and finally `sudo make install`. Yikes, compiler linking problems (and I am pretty rusty with Makefiles).
 
 ## Installing as a service
 To install this ScaleIoT as a service, edit the `scaleiot` script in the root of this repository with `vim scaleiot` or `nano scaleiot`. Then just run `./install.sh` from the root directory of the project. (If you do not have upstart, you may need to add to rc.local or something similar)
@@ -36,17 +36,16 @@ To install this ScaleIoT as a service, edit the `scaleiot` script in the root of
 ## Setting up the web server
 In this project I am using nginx because it is lightweight and less overhead for the pi. The setup is also really simple!
 
-First, install with `sudo apt-get install nginx`. Then, to change the deafult location for the server, do `sudo vim /etc/nginx/sites-available` (substitute for your favorite editor). On the line with ``, just edit the path from `/usr/share/nginx/www` to the root directory of the project.
+First, install with `sudo apt-get install nginx`. Then, to change the deafult location for the server, do `sudo vim /etc/nginx/sites-available/default` (substitute for your favorite editor). On the line `root /var/www/html`, just edit the path to the root directory of the project.
 
-Finally, you will need to install dependencies for the web page. I used bower in this case. You might need to install that and nodejs.
+Finally, you will need to install dependencies for the web page. I used bower in this case. You might need to install that and nodejs, check out AdaFruit's wonderful [tutorial](https://learn.adafruit.com/node-embedded-development/installing-node-dot-js) and simple setup for node (on pi 1 + 2, pi 3 just do `sudo apt-get install node`).
 ```
 cd web/
-sudo apt-get install node
 npm install -g bower
 bower install
 ```
 
-Finally, start up nginx (will run by default on startup normally): `sudo /etc/init.d/nginx start`.
+Finally, reboot: `sudo reboot`.
 
 ## Projects Used
 - [OpenCV for Python](http://opencv.org/) - Open source computer vision library
