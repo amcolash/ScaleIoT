@@ -76,8 +76,14 @@ $(document).ready(function() {
     // Store some stats while parsing through
     var lastTime = 0;
     var lastWeight = 0;
+    var high = -999;
+    var low = 999;
     var averageWeight = 0;
     var totalWeights = 0;
+
+    var date = new Date();
+    var current = date.getTime();
+    var previousMonth = current - (1000 * 60 * 60 * 24 * 30);
 
     $.each(data, function(key, value) {
       value = parseFloat(value);
@@ -89,8 +95,19 @@ $(document).ready(function() {
         lastWeight = value;
       }
 
-      averageWeight += value;
-      totalWeights ++;
+      // Only keep track of the past month of averages
+      if (parseInt(key) >= previousMonth) {
+        if (value < low) {
+          low = value;
+        }
+
+        if (value > high) {
+          high = value;
+        }
+
+        averageWeight += value;
+        totalWeights ++;
+      }
     });
 
     if (lastWeight > 0) {
@@ -104,6 +121,18 @@ $(document).ready(function() {
       $('#averageWeight').text(averageWeight.toFixed(1) + ' lbs');
     } else {
       $('averageWeight').text('?');
+    }
+
+    if (low < 999) {
+      $('#lowWeight').text(low.toFixed(1) + ' lbs');
+    } else {
+      $('lowWeight').text('?');
+    }
+
+    if (high > -999) {
+      $('#highWeight').text(high.toFixed(1) + ' lbs');
+    } else {
+      $('highWeight').text('?');
     }
 
     // sort the dates because it doesn't seem like Python is doing it for us :/
