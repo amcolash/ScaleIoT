@@ -42,31 +42,35 @@ def event_trigger(channel):
   weight = float(weight)
 
   if (weight < MIN_WEIGHT) or (weight > MAX_WEIGHT):
-    raise ValueError('Invalid Weight!')
-  else:
-    logger.info("Weight: " + str(weight))
+    # Handle case where the hundreds digit is cut off for some reason
+    if (weight + 100 > MIN_WEIGHT) and (weight + 100 < MAX_WEIGHT):
+      weight = weight + 100
+    else:
+      raise ValueError('Invalid Weight!')
+    
+  logger.info("Weight: " + str(weight))
 
-    # Open the json file
-    with open('../web/data.json') as f:
-      data = json.load(f)
+  # Open the json file
+  with open('../web/data.json') as f:
+    data = json.load(f)
 
-    # Get time/date
-    # timestamp = time.strftime('%x %X %Z')
-    timestamp = int(round(time.time() * 1000))
+  # Get time/date
+  # timestamp = time.strftime('%x %X %Z')
+  timestamp = int(round(time.time() * 1000))
 
-    # Append to the temp json object
-    data.update({timestamp : weight})
+  # Append to the temp json object
+  data.update({timestamp : weight})
 
-    # Write changes to the file
-    with open('../web/data.json', 'w') as f:
-      json.dump(data, f, sort_keys=True, indent=2)
+  # Write changes to the file
+  with open('../web/data.json', 'w') as f:
+    json.dump(data, f, sort_keys=True, indent=2)
 
-    # Flash Green LED for successful weight capture
-    for i in range(0,6):
-      GPIO.output(GREEN_LED, True)
-      time.sleep(0.35)
-      GPIO.output(GREEN_LED, False)
-      time.sleep(0.35)
+  # Flash Green LED for successful weight capture
+  for i in range(0,6):
+    GPIO.output(GREEN_LED, True)
+    time.sleep(0.35)
+    GPIO.output(GREEN_LED, False)
+    time.sleep(0.35)
 
 
 def exception_handler(type, value, tb):
