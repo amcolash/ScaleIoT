@@ -134,7 +134,7 @@ def setup_gpio():
   GPIO.output(RED_LED, False)
 
   # Set up trigger event handler
-  GPIO.add_event_detect(TRIGGER, GPIO.FALLING, callback=event_trigger, bouncetime=300)
+  GPIO.add_event_detect(TRIGGER, GPIO.FALLING, callback=event_trigger, bouncetime=8000)
 
   # Set up SIGINT and SIGTERM event handlers (cleanly exit after ctrl-c and kill)
   signal.signal(signal.SIGINT, signal_handler)
@@ -151,7 +151,7 @@ def main():
   logger.info("starting scaleiot, current directory: " + os.getcwd())
 
   while True:
-    time.sleep(30)
+    time.sleep(1)
 
   GPIO.cleanup()       # clean up GPIO
 
