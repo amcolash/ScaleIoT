@@ -6,10 +6,12 @@ import sys
 import os
 import logging
 import json
+import requests
+import ifttt
 
 # Define MIN/MAX ranges for weight, if outside range error (I used +/- 10%)
-MIN_WEIGHT=160
-MAX_WEIGHT=220
+MIN_WEIGHT=150
+MAX_WEIGHT=180
 
 # LED GPIO Pin
 GREEN_LED=13
@@ -41,13 +43,13 @@ def event_trigger(channel):
   # Live on the wild side, exceptions are handled globally for us (probably bad)
   weight = float(weight)
 
+  # Handle case where the hundreds digit is cut off for some reason
+  if (weight < 100):
+    weight = weight + 100
+
   if (weight < MIN_WEIGHT) or (weight > MAX_WEIGHT):
-    # Handle case where the hundreds digit is cut off for some reason
-    if (weight + 100 > MIN_WEIGHT) and (weight + 100 < MAX_WEIGHT):
-      weight = weight + 100
-    else:
-      raise ValueError('Invalid Weight!')
-    
+    raise ValueError('Invalid Weight!')
+
   logger.info("Weight: " + str(weight))
 
   # Open the json file
@@ -64,6 +66,13 @@ def event_trigger(channel):
   # Write changes to the file
   with open('../web/data.json', 'w') as f:
     json.dump(data, f, sort_keys=True, indent=2)
+
+  # Send weight to IFTTT maker channel
+  if len(ifttt.IFTTT_KEY) > 0 and len(ifttt.IFTTT_TRIGGER) > 0:
+      url = 'https://maker.ifttt.com/trigger/' + ifttt.IFTTT_TRIGGER + '/with/key/' + ifttt.IFTTT_KEY
+      payload = {'value1': weight}
+      response = requests.post(url, json=payload)
+      logger.info('IFTTT Response: ' + response.text)
 
   # Flash Green LED for successful weight capture
   for i in range(0,6):
