@@ -1,4 +1,5 @@
 import ocr
+import stats
 import RPi.GPIO as GPIO
 import time
 import signal
@@ -60,6 +61,9 @@ def event_trigger(channel):
     # Write changes to the file
     with open('../web/data.json', 'w') as f:
       json.dump(data, f, sort_keys=True, indent=2)
+
+    # Update stats
+    stats.get_stats()
 
     # Flash Green LED for successful weight capture
     for i in range(0,6):
