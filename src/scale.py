@@ -7,10 +7,12 @@ import sys
 import os
 import logging
 import json
+import requests
+import ifttt
 
 # Define MIN/MAX ranges for weight, if outside range error (I used +/- 10%)
-MIN_WEIGHT=160
-MAX_WEIGHT=220
+MIN_WEIGHT=150
+MAX_WEIGHT=180
 
 # LED GPIO Pin
 GREEN_LED=13
@@ -42,35 +44,46 @@ def event_trigger(channel):
   # Live on the wild side, exceptions are handled globally for us (probably bad)
   weight = float(weight)
 
+  # Handle case where the hundreds digit is cut off for some reason
+  if (weight < 100):
+    weight = weight + 100
+
   if (weight < MIN_WEIGHT) or (weight > MAX_WEIGHT):
     raise ValueError('Invalid Weight!')
-  else:
-    logger.info("Weight: " + str(weight))
 
-    # Open the json file
-    with open('../web/data.json') as f:
-      data = json.load(f)
+  logger.info("Weight: " + str(weight))
 
-    # Get time/date
-    # timestamp = time.strftime('%x %X %Z')
-    timestamp = int(round(time.time() * 1000))
+  # Open the json file
+  with open('../web/data.json') as f:
+    data = json.load(f)
 
-    # Append to the temp json object
-    data.update({timestamp : weight})
+  # Get time/date
+  # timestamp = time.strftime('%x %X %Z')
+  timestamp = int(round(time.time() * 1000))
 
-    # Write changes to the file
-    with open('../web/data.json', 'w') as f:
-      json.dump(data, f, sort_keys=True, indent=2)
+  # Append to the temp json object
+  data.update({timestamp : weight})
 
-    # Update stats
-    stats.get_stats()
+  # Write changes to the file
+  with open('../web/data.json', 'w') as f:
+    json.dump(data, f, sort_keys=True, indent=2)
 
-    # Flash Green LED for successful weight capture
-    for i in range(0,6):
-      GPIO.output(GREEN_LED, True)
-      time.sleep(0.35)
-      GPIO.output(GREEN_LED, False)
-      time.sleep(0.35)
+  # Send weight to IFTTT maker channel
+  if len(ifttt.IFTTT_KEY) > 0 and len(ifttt.IFTTT_TRIGGER) > 0:
+      url = 'https://maker.ifttt.com/trigger/' + ifttt.IFTTT_TRIGGER + '/with/key/' + ifttt.IFTTT_KEY
+      payload = {'value1': weight}
+      response = requests.post(url, json=payload)
+      logger.info('IFTTT Response: ' + response.text)
+
+  # Update stats
+  stats.get_stats()
+
+  # Flash Green LED for successful weight capture
+  for i in range(0,6):
+    GPIO.output(GREEN_LED, True)
+    time.sleep(0.35)
+    GPIO.output(GREEN_LED, False)
+    time.sleep(0.35)
 
 
 def exception_handler(type, value, tb):
@@ -125,7 +138,7 @@ def setup_gpio():
   GPIO.output(RED_LED, False)
 
   # Set up trigger event handler
-  GPIO.add_event_detect(TRIGGER, GPIO.FALLING, callback=event_trigger, bouncetime=300)
+  GPIO.add_event_detect(TRIGGER, GPIO.FALLING, callback=event_trigger, bouncetime=8000)
 
   # Set up SIGINT and SIGTERM event handlers (cleanly exit after ctrl-c and kill)
   signal.signal(signal.SIGINT, signal_handler)
@@ -142,7 +155,7 @@ def main():
   logger.info("starting scaleiot, current directory: " + os.getcwd())
 
   while True:
-    time.sleep(30)
+    time.sleep(1)
 
   GPIO.cleanup()       # clean up GPIO
 

@@ -7,7 +7,6 @@ This project:
 - Do OCR on the image
 - Record data
 - Graph data on a web page
-- Push to PebbleHealth API (Future)
 
 # Setup
 
