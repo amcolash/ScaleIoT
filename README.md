@@ -11,14 +11,14 @@ This project:
 # Setup
 
 ## Cloning the project
-To start, you will need a copy of this project. Open up your terminal and then you will be set to start! Simply type `git clone https://github.com/amcolash/ScaleIoT.git` or `git clone git@github.com:amcolash/ScaleIoT.git`, depending on your preferences for cloning repos. If you don't know, choose the first option.
+To start, you will need a copy of this project. Open up your terminal and then you will be set to start! First, you will need to install git if you don't have it yet: `sudo apt-get install git`. Then type `git clone https://github.com/amcolash/ScaleIoT.git` or `git clone git@github.com:amcolash/ScaleIoT.git`, depending on your preferences for cloning repos. If you don't know, choose the first option.
 
 ## Installing dependencies
 - Install opencv (with python bindings and NumPy for python 2.x)
   `sudo apt-get install python-opencv python-numpy`
 - Install ssocr (ocr of seven segment displays)
 ```
-sudo apt-get install libx11-dev libimlib2-dev
+sudo apt-get install libx11-dev libimlib2-dev make
 wget http://www.unix-ag.uni-kl.de/~auerswal/ssocr/ssocr-2.14.1.tar.bz2
 bzip2 -d ssocr-2.14.1.tar.bz2
 tar xvf ssocr-2.14.1.tar
@@ -37,7 +37,7 @@ In this project I am using nginx because it is lightweight and less overhead for
 
 First, install with `sudo apt-get install nginx`. Then, to change the deafult location for the server, do `sudo vim /etc/nginx/sites-available/default` (substitute for your favorite editor). On the line `root /var/www/html`, just edit the path to the root directory of the project.
 
-Finally, you will need to install dependencies for the web page. I used bower in this case. You might need to install that and nodejs, check out AdaFruit's wonderful [tutorial](https://learn.adafruit.com/node-embedded-development/installing-node-dot-js) and simple setup for node (on pi 1 + 2, pi 3 just do `sudo apt-get install node`).
+Finally, you will need to install dependencies for the web page. I used bower in this case. You might need to install that and nodejs, check out AdaFruit's wonderful [tutorial](https://learn.adafruit.com/node-embedded-development/installing-node-dot-js) and simple setup for node (on pi 1 + 2, pi 3 just do `sudo apt-get install node-js`).
 ```
 npm install -g bower
 bower install
