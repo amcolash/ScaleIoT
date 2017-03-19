@@ -19,10 +19,8 @@ To start, you will need a copy of this project. Open up your terminal and then y
 - Install ssocr (ocr of seven segment displays)
 ```
 sudo apt-get install libx11-dev libimlib2-dev make
-wget http://www.unix-ag.uni-kl.de/~auerswal/ssocr/ssocr-2.14.1.tar.bz2
-bzip2 -d ssocr-2.14.1.tar.bz2
-tar xvf ssocr-2.14.1.tar
-cd ssocr-2.14.1/
+git clone https://github.com/auerswal/ssocr.git
+cd ssocr/
 make
 sudo make install
 ```
